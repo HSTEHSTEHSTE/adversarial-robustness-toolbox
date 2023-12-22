@@ -1,0 +1,79 @@
+name: CI PyTorchIcefall
+on:
+  # on manual trigger
+  workflow_dispatch:
+
+  # on pull requests
+  pull_request:
+    paths-ignore:
+      - '*.md'
+
+  # on merge queue
+  merge_group:
+
+  # when pushing to main or dev branches
+  push:
+    branches:
+      - main
+      - dev*
+
+  # scheduled CI flow daily
+  schedule:
+    - cron: '0 8 * * 0'
+
+jobs:
+  test_icefall:
+    name: PyTorchIcefall
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install Dependencies
+        run: |
+          apt-get update \
+          && apt-get install -y \
+              libgl1-mesa-glx \
+              libx11-xcb1 \
+              git \
+              gcc \
+              mono-mcs \
+              libavcodec-extra \
+              ffmpeg \
+              curl \
+              libsndfile-dev \
+              libsndfile1 \
+          && apt-get clean all \
+          && rm -r /var/lib/apt/lists/*
+          pip install astropy
+          pip install matplotlib
+          pip install pandas
+          pip install -U scikit-learn
+          pip install -u scikit-image
+          pip install torch==2.0.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+          pip install torchaudio
+          pip install k2==1.24.3.dev20230726+cpu.torch2.0.1 -f https://k2-fsa.github.io/k2/cpu.html
+          pip install lhotse
+          git clone https://github.com/HSTEHSTEHSTE/icefall_st.git
+          cd icefall_st
+          git checkout slu
+          pip install -r requirements.txt
+          pip install pytest
+          pip install pytest-cov
+          pip install kaldiio
+          pip install tensorflow
+      - name: Test Action
+        run: | 
+          cd icefall_st/egs/slu/
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
+          pytest --cov-report=xml --cov=art --cov-append -q -vv ../../../tests/estimators/speech_recognition/test_pytorch_icefall.py --framework=pytorch --durations=0
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
