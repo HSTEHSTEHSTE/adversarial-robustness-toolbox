@@ -232,10 +232,13 @@ def get_params() -> AttributeDict:
     )
 
     vocab_size = 1
-    with open(Path(params.lang_dir) / "lexicon_disambig.txt") as lexicon_file:
-        for line in lexicon_file:
-            if len(line.strip()) > 0:  # and '<UNK>' not in line and '<s>' not in line and '</s>' not in line:
-                vocab_size += 1
+    try:
+        with open(Path(params.lang_dir) / "lexicon_disambig.txt") as lexicon_file:
+            for line in lexicon_file:
+                if len(line.strip()) > 0:  # and '<UNK>' not in line and '<s>' not in line and '</s>' not in line:
+                    vocab_size += 1
+    except:
+        pass
     params.vocab_size = vocab_size
 
     return params
@@ -272,10 +275,13 @@ def get_word2id(params):
 
     # 0 is blank
     id = 1
-    with open(Path(params.lang_dir) / "lexicon_disambig.txt") as lexicon_file:
-        for line in lexicon_file:
-            if len(line.strip()) > 0:
-                word2id[line.split()[0]] = id
-                id += 1
+    try:
+        with open(Path(params.lang_dir) / "lexicon_disambig.txt") as lexicon_file:
+            for line in lexicon_file:
+                if len(line.strip()) > 0:
+                    word2id[line.split()[0]] = id
+                    id += 1
+    except:
+        pass
 
     return word2id
