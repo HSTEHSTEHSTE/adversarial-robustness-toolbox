@@ -22,6 +22,7 @@ import pytest
 
 from art.config import ART_NUMPY_DTYPE
 from tests.utils import ARTTestException
+from icefall.utils import AttributeDict
 
 logger = logging.getLogger(__name__)
 
@@ -201,7 +202,6 @@ def get_params() -> AttributeDict:
 
 
     """
-    from icefall.utils import AttributeDict
     from pathlib import Path
 
     params = AttributeDict(
