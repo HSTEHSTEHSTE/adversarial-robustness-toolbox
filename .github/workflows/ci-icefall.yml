@@ -60,8 +60,7 @@ jobs:
           pip install pandas
           pip install -U scikit-learn
           pip install -u scikit-image
-          pip install torch==2.0.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
-          pip install torchaudio
+          pip install -U torch==2.0.1+cpu -f https://download.pytorch.org/whl/torch_stable.html torchaudio
           pip install k2==1.24.3.dev20230726+cpu.torch2.0.1 -f https://k2-fsa.github.io/k2/cpu.html
           pip install lhotse
           git clone https://github.com/HSTEHSTEHSTE/icefall_st.git
