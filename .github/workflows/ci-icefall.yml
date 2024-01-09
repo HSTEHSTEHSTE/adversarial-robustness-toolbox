@@ -37,6 +37,10 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install Dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get -y -q install ffmpeg libavcodec-extra
+          python -m pip install --upgrade pip setuptools wheel
+          pip3 install -r requirements_test.txt
           apt-get update \
           && apt-get install -y \
               libgl1-mesa-glx \
@@ -70,7 +74,9 @@ jobs:
           pip install tensorflow
       - name: Test Action
         run: | 
-          cd icefall_st/egs/slu/
+          cd icefall_st
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
+          cd egs/slu/
           export PYTHONPATH=$PYTHONPATH:$(pwd)
           pytest --cov-report=xml --cov=art --cov-append -q -vv ../../../tests/estimators/speech_recognition/test_pytorch_icefall.py --framework=pytorch --durations=0
       - name: Upload coverage to Codecov
