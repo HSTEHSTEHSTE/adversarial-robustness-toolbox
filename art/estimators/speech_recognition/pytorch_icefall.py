@@ -36,6 +36,7 @@ from art.utils import get_file
 if TYPE_CHECKING:
     # pylint: disable=C0412
     import torch
+
     # import icefall - what's the role of type checking here?
 
     from art.defences.preprocessor.preprocessor import Preprocessor
@@ -43,7 +44,6 @@ if TYPE_CHECKING:
     from art.utils import CLIP_VALUES_TYPE, PREPROCESSING_TYPE
 
 logger = logging.getLogger(__name__)
-
 
 
 class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorchEstimator):
@@ -57,8 +57,8 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
     from icefall.utils import AttributeDict
     from pathlib import Path
     import k2
-    estimator_params = PyTorchEstimator.estimator_params + ["icefall_config_filepath"]
 
+    estimator_params = PyTorchEstimator.estimator_params + ["icefall_config_filepath"]
 
     def __init__(
         self,
@@ -123,19 +123,19 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
 
         # construct icefall args
         params = self.get_params()
-        
 
         # load checkpoint# load_model_ensemble
         self.transducer_model = self.get_transducer_model(params)
         self.word2ids = self.get_word2id(params)
         self.get_id2word = get_id2word(params)
 
-
         if params.avg == 1:
             from icefall.checkpoint import load_checkpoint
+
             load_checkpoint(f"{params.exp_dir}/epoch-{params.epoch}.pt", self.transducer_model)
         else:
             from icefall.checkpoint import average_checkpoints
+
             start = params.epoch - params.avg + 1
             filenames = []
             for i in range(start, params.epoch + 1):
@@ -144,10 +144,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
             logging.info(f"averaging {filenames}")
             self.transducer_model.load_state_dict(average_checkpoints(filenames))
 
-
-        
         self.transducer_model.to(self.device)
-
 
     def get_params(self) -> AttributeDict:
         """Return a dict containing training parameters.
@@ -198,6 +195,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         """
         from icefall.utils import AttributeDict
         from pathlib import Path
+
         params = AttributeDict(
             {
                 "lr": 1e-3,
@@ -221,14 +219,14 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
                 "hidden_dim": 16,
                 "num_decoder_layers": 4,
                 "epoch": 1,
-                "avg": 1
+                "avg": 1,
             }
         )
 
         vocab_size = 1
-        with open(Path(params.lang_dir) / 'lexicon_disambig.txt') as lexicon_file:
+        with open(Path(params.lang_dir) / "lexicon_disambig.txt") as lexicon_file:
             for line in lexicon_file:
-                if len(line.strip()) > 0:# and '<UNK>' not in line and '<s>' not in line and '</s>' not in line:
+                if len(line.strip()) > 0:  # and '<UNK>' not in line and '<s>' not in line and '</s>' not in line:
                     vocab_size += 1
         params.vocab_size = vocab_size
 
@@ -265,7 +263,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         num_batch = int(np.ceil(len(x_preprocessed) / float(batch_size)))
 
         for sample_index in range(num_batch):
-            wav = x_preprocessed[sample_index] # np.array, len = wav len
+            wav = x_preprocessed[sample_index]  # np.array, len = wav len
             shape = wav.shape
 
             # extract features
@@ -275,7 +273,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
             encoder_out, encoder_out_lens = self.transducer_model.encoder(x=x, x_lens=shape)
             hyp = greedy_search(model=self.transducermodel, encoder_out=encoder_out, id2word=self.get_id2word)
             decoded_output.append(hyp)
-            
+
         return np.concatenate(decoded_output)
 
     def get_transducer_model(self, params: AttributeDict):
@@ -283,6 +281,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         from transducer.conformer import Conformer
         from transducer.joiner import Joiner
         from transducer.model import Transducer
+
         encoder = Conformer(
             num_features=params.feature_dim,
             output_dim=params.hidden_dim,
@@ -303,17 +302,18 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
 
     def get_word2id(self, params):
         from pathlib import Path
+
         word2id = {}
 
         # 0 is blank
         id = 1
-        with open(Path(params.lang_dir) / 'lexicon_disambig.txt') as lexicon_file:
+        with open(Path(params.lang_dir) / "lexicon_disambig.txt") as lexicon_file:
             for line in lexicon_file:
                 if len(line.strip()) > 0:
                     word2id[line.split()[0]] = id
                     id += 1
 
-        return word2id 
+        return word2id
 
     def loss_gradient(self, x, y: np.ndarray, **kwargs) -> np.ndarray:
         import k2
@@ -346,12 +346,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         """
         raise NotImplementedError
 
-    def transform_model_input(
-            self,
-            x,
-            y=None,
-            compute_gradient=False
-    ):
+    def transform_model_input(self, x, y=None, compute_gradient=False):
         """
         Transform the user input space into the model input space.
         :param x: Samples of shape (nb_samples, seq_length). Note that, it is allowable that sequences in the batch
@@ -368,6 +363,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         import torchaudio
 
         from dataclasses import dataclass, asdict
+
         @dataclass
         class FbankConfig:
             # Spectogram-related part
@@ -382,7 +378,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
             min_duration: float = 0.0
             preemphasis_coefficient: float = 0.97
             raw_energy: bool = True
-            
+
             # Fbank-related part
             low_freq: float = 20.0
             high_freq: float = -400.0
@@ -393,14 +389,9 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
             vtln_warp: float = 1.0
 
         params = asdict(FbankConfig())
-        params.update({
-            "sample_frequency": 16000,
-            "snip_edges": False,
-            "num_mel_bins": 23
-        })
-        params['frame_shift'] *= 1000.0
-        params['frame_length'] *= 1000.0
-        
+        params.update({"sample_frequency": 16000, "snip_edges": False, "num_mel_bins": 23})
+        params["frame_shift"] *= 1000.0
+        params["frame_length"] *= 1000.0
 
         feature_list = []
         num_frames = []
@@ -408,39 +399,38 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
 
         for i in range(len(x)):
             isnan = torch.isnan(x[i])
-            nisnan=torch.sum(isnan).item()
+            nisnan = torch.sum(isnan).item()
             if nisnan > 0:
-                logging.info('input isnan={}/{} {}'.format(nisnan, x[i].shape, x[i][isnan], torch.max(torch.abs(x[i]))))
-
+                logging.info("input isnan={}/{} {}".format(nisnan, x[i].shape, x[i][isnan], torch.max(torch.abs(x[i]))))
 
             xx = x[i]
             xx = xx.to(self._device)
-            feat_i = torchaudio.compliance.kaldi.fbank(xx.unsqueeze(0), **params) # [T, C]
-            feat_i = feat_i.transpose(0, 1) #[C, T]
+            feat_i = torchaudio.compliance.kaldi.fbank(xx.unsqueeze(0), **params)  # [T, C]
+            feat_i = feat_i.transpose(0, 1)  # [C, T]
             feature_list.append(feat_i)
             num_frames.append(feat_i.shape[1])
-        
-        indices = sorted(range(len(feature_list)),
-                         key=lambda i: feature_list[i].shape[1], reverse=True)
+
+        indices = sorted(range(len(feature_list)), key=lambda i: feature_list[i].shape[1], reverse=True)
         indices = torch.LongTensor(indices)
         num_frames = torch.IntTensor([num_frames[idx] for idx in indices])
         start_frames = torch.zeros(len(x), dtype=torch.int)
 
-        supervisions['sequence_idx'] = indices.int()
-        supervisions['start_frame'] = start_frames
-        supervisions['num_frames'] = num_frames
+        supervisions["sequence_idx"] = indices.int()
+        supervisions["start_frame"] = start_frames
+        supervisions["num_frames"] = num_frames
         if y is not None:
-            supervisions['text'] = [y[idx] for idx in indices]
+            supervisions["text"] = [y[idx] for idx in indices]
 
         feature_sorted = [feature_list[index] for index in indices]
-        
-        feature = torch.zeros(len(feature_sorted), feature_sorted[0].size(0), feature_sorted[0].size(1), device=self._device)
+
+        feature = torch.zeros(
+            len(feature_sorted), feature_sorted[0].size(0), feature_sorted[0].size(1), device=self._device
+        )
 
         for i in range(len(x)):
-            feature[i, :, :feature_sorted[i].size(1)] = feature_sorted[i]
+            feature[i, :, : feature_sorted[i].size(1)] = feature_sorted[i]
 
         return feature.transpose(1, 2), supervisions, indices
-
 
     def to_training_mode(self) -> None:
         """
@@ -491,7 +481,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
 
     def compute_loss(self, x: np.ndarray, y: np.ndarray, **kwargs) -> np.ndarray:
         raise NotImplementedError
-    
+
     def compute_loss_and_decoded_output(
         self, masked_adv_input: "torch.Tensor", original_output: np.ndarray, **kwargs
     ) -> Tuple["torch.Tensor", np.ndarray]:
@@ -506,7 +496,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         """
         from transducer.beam_search import greedy_search
         import k2
-        
+
         assert len(original_output[0]) == 1
         num_batch = len(original_output[0])
         decoded_output = []
@@ -517,8 +507,10 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
             y = k2.RaggedTensor(original_output[sample_index])
             loss = self.transducer_model(x=features, x_lens=x_lens, y=y)
 
-            encoder_out, encoder_out_lens = self.transducer_model.encoder(x=features, x_lens=masked_adv_input[sample_index].shape)
+            encoder_out, encoder_out_lens = self.transducer_model.encoder(
+                x=features, x_lens=masked_adv_input[sample_index].shape
+            )
             hyp = greedy_search(model=self.transducermodel, encoder_out=encoder_out, id2word=self.get_id2word)
             decoded_output.append(hyp)
-            
+
         return np.concatenate(decoded_output)
