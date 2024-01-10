@@ -71,6 +71,10 @@ jobs:
           pip install pytest-cov
           pip install kaldiio
           pip install tensorflow
+          cd egs/slu
+          wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1JbBI0IC-nGx1DZEFhEQRxrEU1wSXjkJn' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1JbBI0IC-nGx1DZEFhEQRxrEU1wSXjkJn" -O epoch-6.pt && rm -rf /tmp/cookies.txt1JbBI0IC-nGx1DZEFhEQRxrEU1wSXjkJn
+          wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1K-CaHTtJ-zZ5oW0us0OaKQmsD2-cO0xN' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1K-CaHTtJ-zZ5oW0us0OaKQmsD2-cO0xN" -O frames.zip && rm -rf /tmp/cookies.txt1K-CaHTtJ-zZ5oW0us0OaKQmsD2-cO0xN
+          unzip frames.zip
       - name: Test Action
         run: | 
           cd icefall_st

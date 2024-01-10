@@ -23,6 +23,7 @@ import pytest
 from art.config import ART_NUMPY_DTYPE
 from tests.utils import ARTTestException
 from icefall.utils import AttributeDict
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,9 @@ def test_pytorch_icefall(art_warning, expected_values, device_type):
     try:
         # construct icefall args
         params = get_params()
+        Path(params['exp_dir']).mkdir(parents=True, exist_ok=True)
+        Path(params['lang_dir']).mkdir(parents=True, exist_ok=True)
+        
 
         # load_model_ensemble
         transducer_model = get_transducer_model(params)
@@ -218,8 +222,8 @@ def get_params() -> AttributeDict:
             "log_interval": 100,
             "reset_interval": 20,
             "valid_interval": 300,
-            "exp_dir": Path("transducer/exp_lr1e-4"),
-            "lang_dir": Path("data/lm/frames"),
+            "exp_dir": Path("."),
+            "lang_dir": Path("frames"),
             # encoder/decoder params
             "vocab_size": 3,  # blank, yes, no
             "blank_id": 0,
