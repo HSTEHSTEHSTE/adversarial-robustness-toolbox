@@ -230,7 +230,7 @@ def get_params() -> AttributeDict:
             "embedding_dim": 32,
             "hidden_dim": 16,
             "num_decoder_layers": 4,
-            "epoch": 1,
+            "epoch": 6,
             "avg": 1,
         }
     )
