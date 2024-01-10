@@ -71,7 +71,7 @@ def test_pytorch_icefall(art_warning, expected_values, device_type):
             model_ensemble['model'].load_state_dict(average_checkpoints(filenames))
 
         # Initialize a speech recognizer
-        speech_recognizer = PyTorchIcefall(model_ensemble)
+        speech_recognizer = PyTorchIcefall(model_ensemble=model_ensemble)
 
         # Load data for testing
         expected_data = expected_values()
