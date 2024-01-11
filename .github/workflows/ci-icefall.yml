@@ -72,7 +72,7 @@ jobs:
           pip install kaldiio
           pip install tensorflow
           cd egs/slu
-          wget https://www.dropbox.com/scl/fi/97wvdjmbuyj13kpzhricc/epoch-6.pt?rlkey=7mehc4v41fovfz0ksbt98krry&dl=0 -O epoch-6.pt
+          wget -O epoch-6.pt https://www.dropbox.com/scl/fi/97wvdjmbuyj13kpzhricc/epoch-6.pt?rlkey=7mehc4v41fovfz0ksbt98krry&dl=0
           wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1K-CaHTtJ-zZ5oW0us0OaKQmsD2-cO0xN' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1K-CaHTtJ-zZ5oW0us0OaKQmsD2-cO0xN" -O frames.zip && rm -rf /tmp/cookies.txt1K-CaHTtJ-zZ5oW0us0OaKQmsD2-cO0xN
           unzip frames.zip
       - name: Test Action
