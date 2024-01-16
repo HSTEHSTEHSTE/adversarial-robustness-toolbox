@@ -27,6 +27,7 @@ import logging
 from typing import Dict, List, Optional, Tuple, TYPE_CHECKING, Union
 
 import numpy as np
+import torch
 
 from art import config
 from art.estimators.pytorch import PyTorchEstimator
@@ -35,9 +36,6 @@ from art.utils import get_file
 
 if TYPE_CHECKING:
     # pylint: disable=C0412
-    import torch
-
-    # import icefall - what's the role of type checking here?
 
     from art.defences.preprocessor.preprocessor import Preprocessor
     from art.defences.postprocessor.postprocessor import Postprocessor
