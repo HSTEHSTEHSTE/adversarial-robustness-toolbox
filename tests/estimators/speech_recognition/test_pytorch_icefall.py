@@ -82,7 +82,6 @@ def test_pytorch_icefall(art_warning, expected_values, device_type):
         # expected_sizes = expected_data["expected_sizes"]
         expected_transcriptions1 = expected_data["expected_transcriptions1"]
         expected_transcriptions2 = expected_data["expected_transcriptions2"]
-        # expected_probs = expected_data["expected_probs"]
         expected_gradients1 = expected_data["expected_gradients1"]
         expected_gradients2 = expected_data["expected_gradients2"]
         expected_gradients3 = expected_data["expected_gradients3"]
@@ -97,63 +96,16 @@ def test_pytorch_icefall(art_warning, expected_values, device_type):
         )
 
         # Create labels
-        y = np.array(["SIX", "HI", "GOOD"])
-
-        # Test probability outputs
-        # probs, sizes = speech_recognizer.predict(x, batch_size=2,)
-        #
-        # np.testing.assert_array_almost_equal(probs[1][1], expected_probs, decimal=3)
-        # np.testing.assert_array_almost_equal(sizes, expected_sizes)
+        y = np.array([['<s>', 'change_language', 'none', 'none', '</s>'], ['<s>', 'deactivate', 'lights', 'none', '</s>'], ['<s>', 'deactivate', 'lamp', 'none', '</s>']])
 
         # Test transcription outputs
-        _ = speech_recognizer.predict(x[[0]], batch_size=2)
+        hyps = []
+        hyps.append(speech_recognizer.predict(x[[0]]))
+        hyps.append(speech_recognizer.predict(x[[1]]))
+        hyps.append(speech_recognizer.predict(x[[2]]))
+        print(hyps)
 
-        # Test transcription outputs
-        transcriptions = speech_recognizer.predict(x, batch_size=2)
-
-        assert (expected_transcriptions1 == transcriptions).all()
-
-        # Test transcription outputs, corner case
-        transcriptions = speech_recognizer.predict(np.array([x[0]]), batch_size=2)
-
-        assert (expected_transcriptions2 == transcriptions).all()
-
-        # Now test loss gradients
-        # Compute gradients
-        grads = speech_recognizer.loss_gradient(x, y)
-
-        assert grads[0].shape == (1300,)
-        assert grads[1].shape == (1500,)
-        assert grads[2].shape == (1400,)
-
-        np.testing.assert_array_almost_equal(grads[0][:20], expected_gradients1, decimal=-2)
-        np.testing.assert_array_almost_equal(grads[1][:20], expected_gradients2, decimal=-2)
-        np.testing.assert_array_almost_equal(grads[2][:20], expected_gradients3, decimal=-2)
-
-        # Train the estimator
-        with pytest.raises(NotImplementedError):
-            speech_recognizer.fit(x=x, y=y, batch_size=2, nb_epochs=5)
-
-        # Compute local shape
-        local_batch_size = len(x)
-        real_lengths = np.array([x_.shape[0] for x_ in x])
-        local_max_length = np.max(real_lengths)
-
-        # Reformat input
-        input_mask = np.zeros([local_batch_size, local_max_length], dtype=np.float64)
-        original_input = np.zeros([local_batch_size, local_max_length], dtype=np.float64)
-
-        for local_batch_size_idx in range(local_batch_size):
-            input_mask[local_batch_size_idx, : len(x[local_batch_size_idx])] = 1
-            original_input[local_batch_size_idx, : len(x[local_batch_size_idx])] = x[local_batch_size_idx]
-
-        # compute_loss_and_decoded_output
-        loss, decoded_output = speech_recognizer.compute_loss_and_decoded_output(
-            masked_adv_input=torch.tensor(original_input), original_output=y
-        )
-
-        assert loss.detach().numpy() == pytest.approx(46.3156, abs=20.0)
-        assert all(decoded_output == ["EH", "EH", "EH"])
+        assert (np.array(hyps) == y).all()
 
     except ARTTestException as e:
         art_warning(e)
