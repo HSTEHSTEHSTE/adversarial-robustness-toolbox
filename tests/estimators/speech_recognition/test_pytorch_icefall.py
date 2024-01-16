@@ -90,7 +90,7 @@ def test_pytorch_icefall(art_warning, expected_values, device_type):
         )
 
         # Create labels
-        y = np.array([['<s>', 'change_language', 'none', 'none', '</s>'], ['<s>', 'deactivate', 'lights', 'none', '</s>'], ['<s>', 'deactivate', 'lamp', 'none', '</s>']])
+        y = np.array([['<s>', 'activate', 'lights', 'none', '</s>'], ['<s>', 'increase', 'volume', 'none', '</s>'], ['<s>', 'deactivate', 'lights', 'washroom', '</s>']])
 
         # Test transcription outputs
         hyps = []
