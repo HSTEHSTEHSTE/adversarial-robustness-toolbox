@@ -46,6 +46,7 @@ def test_pytorch_icefall(art_warning, expected_values, device_type):
 
         # load_model_ensemble
         transducer_model = get_transducer_model(params)
+        transducer_model.device = 'cpu'
         word2ids = get_word2id(params)
         get_id2word = get_id2word(params)
         model_ensemble = {
