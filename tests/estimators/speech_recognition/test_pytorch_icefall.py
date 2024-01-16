@@ -81,22 +81,16 @@ def test_pytorch_icefall(art_warning, expected_values, device_type):
         x3 = expected_data["x3"]
 
         # Create signal data
-        x = np.array(
-            [
-                np.array(x1 * 100, dtype=ART_NUMPY_DTYPE),
-                np.array(x2 * 100, dtype=ART_NUMPY_DTYPE),
-                np.array(x3 * 100, dtype=ART_NUMPY_DTYPE),
-            ]
-        )
+        xs = [x1, x2, x3]
 
         # Create labels
         y = np.array([['<s>', 'activate', 'lights', 'none', '</s>'], ['<s>', 'increase', 'volume', 'none', '</s>'], ['<s>', 'deactivate', 'lights', 'washroom', '</s>']])
 
         # Test transcription outputs
         hyps = []
-        hyps.append(speech_recognizer.predict(x[[0]]))
-        hyps.append(speech_recognizer.predict(x[[1]]))
-        hyps.append(speech_recognizer.predict(x[[2]]))
+        hyps.append(speech_recognizer.predict(x[0]))
+        hyps.append(speech_recognizer.predict(x[1]))
+        hyps.append(speech_recognizer.predict(x[2]))
         print(hyps)
 
         assert (np.array(hyps) == y).all()
