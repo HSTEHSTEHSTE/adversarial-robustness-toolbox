@@ -156,17 +156,16 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         num_batch = int(np.ceil(len(x_preprocessed) / float(batch_size)))
 
         for sample_index in range(num_batch):
-            wav = x_preprocessed[sample_index]  # np.array, len = wav len
-            shape = wav.shape
+            wav = x_preprocessed[sample_index] # np.array, len = wav len
 
             # extract features
-            x = self.transform_model_input(x=torch.tensor(wav))
+            x, _, _ = self.transform_model_input(x=torch.tensor(wav))
+            shape = torch.tensor([x.shape[1]])
 
-            print(shape)
             encoder_out, encoder_out_lens = self.transducer_model.encoder(x=x, x_lens=shape)
             hyp = greedy_search(model=self.transducer_model, encoder_out=encoder_out, id2word=self.get_id2word)
             decoded_output.append(hyp)
-
+            
         return np.concatenate(decoded_output)
 
     def loss_gradient(self, x, y: np.ndarray, **kwargs) -> np.ndarray:
