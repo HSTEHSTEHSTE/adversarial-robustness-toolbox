@@ -88,9 +88,9 @@ def test_pytorch_icefall(art_warning, expected_values, device_type):
 
         # Test transcription outputs
         hyps = []
-        hyps.append(speech_recognizer.predict(x[0]))
-        hyps.append(speech_recognizer.predict(x[1]))
-        hyps.append(speech_recognizer.predict(x[2]))
+        hyps.append(speech_recognizer.predict(xs[0]))
+        hyps.append(speech_recognizer.predict(xs[1]))
+        hyps.append(speech_recognizer.predict(xs[2]))
         print(hyps)
 
         assert (np.array(hyps) == y).all()
