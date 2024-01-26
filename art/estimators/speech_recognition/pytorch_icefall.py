@@ -160,7 +160,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
 
             # extract features
             x, _, _ = self.transform_model_input(x=torch.tensor(wav))
-            shape = torch.tensor([x.shape[1]])
+            shape = torch.tensor([x.shape[1]]).to(self.device)
 
             encoder_out, encoder_out_lens = self.transducer_model.encoder(x=x, x_lens=shape)
             hyp = greedy_search(model=self.transducer_model, encoder_out=encoder_out, id2word=self.get_id2word)
