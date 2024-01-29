@@ -207,7 +207,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         
 
         # Train with batch processing
-        num_batch = int(np.ceil(len(x_preprocessed) / float(batch_size)))
+        num_batch = int(np.ceil(len(x) / float(batch_size)))
 
         # Main training loop
         for epoch in range(nb_epochs):
