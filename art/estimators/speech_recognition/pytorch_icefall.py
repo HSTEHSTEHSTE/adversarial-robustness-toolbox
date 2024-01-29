@@ -198,6 +198,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
                        and providing it takes no effect.
         """
         import torch.optim as optim
+        import k2
         
         optimizer = optim.Adam(
             self.transducer_model.parameters(),
