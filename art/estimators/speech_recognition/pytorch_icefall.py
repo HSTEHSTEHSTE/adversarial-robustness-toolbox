@@ -200,9 +200,9 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         import torch.optim as optim
         
         optimizer = optim.Adam(
-            model.parameters(),
-            lr=params.lr,
-            weight_decay=params.weight_decay,
+            self.transducer_model.parameters(),
+            lr=self.params.lr,
+            weight_decay=self.params.weight_decay,
         )
         
 
