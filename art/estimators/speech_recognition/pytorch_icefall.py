@@ -198,6 +198,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
                        and providing it takes no effect.
         """
         import torch.optim as optim
+        import tqdm
         from torch.nn.utils import clip_grad_norm_
         import k2
         
@@ -213,9 +214,13 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
 
         # Main training loop
         for epoch in range(nb_epochs):
+            logger.info(
+                "Epoch: ",
+                epoch
+            )
             self.to_training_mode()
 
-            for batch_index in range(num_batch):
+            for batch_index in tqdm.tqdm(range(num_batch)):
                 # Batch indexes
                 begin = batch_index * batch_size
                 end = min((batch_index + 1) * batch_size, len(x))
