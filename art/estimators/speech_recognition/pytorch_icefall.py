@@ -198,6 +198,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
                        and providing it takes no effect.
         """
         import torch.optim as optim
+        from torch.nn.utils import clip_grad_norm_
         import k2
         
         self.optimizer = optim.Adam(
