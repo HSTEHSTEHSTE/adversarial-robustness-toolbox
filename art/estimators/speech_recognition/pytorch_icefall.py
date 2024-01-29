@@ -217,7 +217,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
                 # Batch indexes
                 begin, end = (
                     batch_index * batch_size,
-                    min((batch_index + 1) * batch_size, feats.shape[0]),
+                    min((batch_index + 1) * batch_size, x.shape[0]),
                 )
 
                 x_current = x[begin, end]
