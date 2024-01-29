@@ -218,8 +218,8 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
                 begin = batch_index * batch_size
                 end = min((batch_index + 1) * batch_size, len(x))
 
-                x_current = x[begin, end]
-                y_current = y[begin, end]
+                x_current = x[begin: end]
+                y_current = y[begin: end]
                 # Compute features
                 features, _, _ = self.transform_model_input(x_current, y_current, compute_gradient=False)
 
