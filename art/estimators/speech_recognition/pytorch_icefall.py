@@ -183,7 +183,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         results = self._apply_preprocessing_gradient(x, results)
         return results
 
-    def fit(self, x: np.ndarray, y: np.ndarray, batch_size: int = 128, nb_epochs: int = 10, **kwargs) -> None:
+    def fit(self, x: np.ndarray, y: np.ndarray, batch_size: int = 1, nb_epochs: int = 6, **kwargs) -> None:
         """
         Fit the estimator on the training set `(x, y)`.
 
@@ -197,7 +197,43 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         :param kwargs: Dictionary of framework-specific arguments. This parameter is not currently supported for PyTorch
                        and providing it takes no effect.
         """
-        raise NotImplementedError
+        import torch.optim as optim
+        
+        optimizer = optim.Adam(
+            model.parameters(),
+            lr=params.lr,
+            weight_decay=params.weight_decay,
+        )
+        
+
+        # Train with batch processing
+        num_batch = int(np.ceil(len(x_preprocessed) / float(batch_size)))
+
+        # Main training loop
+        for epoch in range(nb_epochs):
+            self.to_training_mode()
+
+            for batch_index in range(num_batch):
+                # Batch indexes
+                begin, end = (
+                    batch_index * batch_size,
+                    min((batch_index + 1) * batch_size, feats.shape[0]),
+                )
+
+                x_current = x[begin, end]
+                y_current = y[begin, end]
+                # Compute features
+                features, _, _ = self.transform_model_input(x_current, y_current, compute_gradient=False)
+
+                x_lens = torch.tensor([features.shape[1]]).to(torch.int32).to(self.device)
+                y_current = k2.RaggedTensor(y_current)
+                loss = self.transducer_model(x=features, x_lens=x_lens, y=y_current)
+
+                self.optimizer.zero_grad()
+                loss.backward()
+                clip_grad_norm_(self.transducer_model.parameters(), 5.0, 2.0)
+                self.optimizer.step()
+
 
     def transform_model_input(self, x, y=None, compute_gradient=False):
         """
