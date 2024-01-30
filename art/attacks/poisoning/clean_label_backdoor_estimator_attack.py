@@ -154,7 +154,7 @@ class PoisoningAttackCleanLabelEstimatorBackdoor(PoisoningAttackBlackBox):
         # Selected target indices to poison
         target_indices = []
         for x_index, x_instance in enumerate(x):
-            if self.target_function(x_instance):
+            if self.target_function(estimated_labels[x_index]):
                 target_indices.append(x_index)
         target_indices = np.array(target_indices)
         num_poison = int(self.pp_poison * len(target_indices))
