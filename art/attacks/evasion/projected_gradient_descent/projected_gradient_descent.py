@@ -30,6 +30,7 @@ from typing import Optional, Union, TYPE_CHECKING
 
 import numpy as np
 
+from art.estimators.pytorch import PyTorchEstimator
 from art.estimators.classification.pytorch import PyTorchClassifier
 from art.estimators.classification.tensorflow import TensorFlowV2Classifier
 from art.estimators.estimator import BaseEstimator, LossGradientsMixin
