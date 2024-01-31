@@ -145,7 +145,7 @@ class PoisoningAttackCleanLabelEstimatorBackdoor(PoisoningAttackBlackBox):
         if y is None:
             estimated_labels = []
             for x_instance in x:
-                estimated_labels.append(self.proxy_estimator.predict(x_instance))
+                estimated_labels.append(self.proxy_estimator.predict(np.expand_dims(wavs[0].numpy(), 0)))
         else:
             if isinstance(y, np.ndarray):
                 y = y.tolist()
