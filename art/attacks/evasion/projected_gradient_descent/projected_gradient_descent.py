@@ -133,7 +133,8 @@ class ProjectedGradientDescent(EvasionAttack):
         self._attack: Union[
             ProjectedGradientDescentPyTorch, ProjectedGradientDescentTensorFlowV2, ProjectedGradientDescentNumpy
         ]
-        if isinstance(self.estimator, PyTorchClassifier) and self.estimator.all_framework_preprocessing:
+        if isinstance(self.estimator, PyTorchClassifier) and self.estimator.all_framework_preprocessing
+            or isinstance(self.estimator, PyTorchEstimator):
             self._attack = ProjectedGradientDescentPyTorch(
                 estimator=estimator,  # type: ignore
                 norm=norm,
