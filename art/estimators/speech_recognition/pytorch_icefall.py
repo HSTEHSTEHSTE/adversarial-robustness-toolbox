@@ -174,6 +174,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         x = torch.autograd.Variable(x, requires_grad=True)
         features, _, _ = self.transform_model_input(x=x, compute_gradient=True)
         x_lens = torch.tensor([features.shape[1]]).to(torch.int32).to(self.device)
+        print(y)
         y = k2.RaggedTensor(y)
         loss = self.transducer_model(x=features, x_lens=x_lens, y=y)
         loss.backward()
