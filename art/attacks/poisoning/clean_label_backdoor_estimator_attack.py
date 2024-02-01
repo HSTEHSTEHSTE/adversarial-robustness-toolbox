@@ -193,7 +193,7 @@ class PoisoningAttackCleanLabelEstimatorBackdoor(PoisoningAttackBlackBox):
 
         # Add backdoor and poison with the same label
         for perturbed_index, selected_index in enumerate(selected_indices):
-            poisoned_input, _ = self.backdoor.poison(perturbed_inputs[perturbed_index], self.target, broadcast=broadcast)
+            poisoned_input, _ = self.backdoor.poison(perturbed_inputs[perturbed_index], estimated_labels[perturbed_index], broadcast=broadcast)
             data[selected_index] = poisoned_input
 
         return data, estimated_labels
