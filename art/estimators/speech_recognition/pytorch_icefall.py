@@ -140,8 +140,6 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         
         if not isinstance(x, np.ndarray):
             x = np.array(x)
-        
-        print(x)
 
         assert batch_size == 1
 
