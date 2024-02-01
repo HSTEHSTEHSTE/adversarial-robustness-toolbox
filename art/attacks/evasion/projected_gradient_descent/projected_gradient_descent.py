@@ -91,6 +91,7 @@ class ProjectedGradientDescent(EvasionAttack):
         random_eps: bool = False,
         summary_writer: Union[str, bool, SummaryWriter] = False,
         verbose: bool = True,
+        compute_success: bool = True,
     ):
         """
         Create a :class:`.ProjectedGradientDescent` instance.
@@ -148,6 +149,7 @@ class ProjectedGradientDescent(EvasionAttack):
                 random_eps=random_eps,
                 summary_writer=summary_writer,
                 verbose=verbose,
+                compute_success=compute_success
             )
 
         elif isinstance(self.estimator, TensorFlowV2Classifier) and self.estimator.all_framework_preprocessing:
