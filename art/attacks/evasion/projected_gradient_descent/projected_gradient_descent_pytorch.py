@@ -174,7 +174,7 @@ class ProjectedGradientDescentPyTorch(ProjectedGradientDescentCommon):
         else:
             dataset = torch.utils.data.TensorDataset(
                 torch.from_numpy(x.astype(ART_NUMPY_DTYPE)),
-                torch.from_numpy(targets.astype(ART_NUMPY_DTYPE)).long(),
+                torch.from_numpy(targets.astype(ART_NUMPY_DTYPE)).to(torch.int32),
             )
 
         data_loader = torch.utils.data.DataLoader(
