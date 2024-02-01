@@ -108,7 +108,8 @@ class PoisoningAttackCleanLabelEstimatorBackdoor(PoisoningAttackBlackBox):
                 max_iter=max_iter,
                 targeted=self.targeted,
                 num_random_init=num_random_init,
-                batch_size = 1
+                batch_size = 1,
+                compute_success = False
             )
         else:
             self.targeted = True
@@ -120,7 +121,8 @@ class PoisoningAttackCleanLabelEstimatorBackdoor(PoisoningAttackBlackBox):
                 eps_step=0.1,
                 max_iter=max_iter,
                 num_random_init=num_random_init,
-                batch_size = 1
+                batch_size = 1,
+                compute_success = False
             )
         self._check_params()
 

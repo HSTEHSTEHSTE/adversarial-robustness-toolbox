@@ -73,6 +73,7 @@ class ProjectedGradientDescentPyTorch(ProjectedGradientDescentCommon):
         random_eps: bool = False,
         summary_writer: Union[str, bool, SummaryWriter] = False,
         verbose: bool = True,
+        compute_success: bool = True
     ):
         """
         Create a :class:`.ProjectedGradientDescentPyTorch` instance.
@@ -124,6 +125,7 @@ class ProjectedGradientDescentPyTorch(ProjectedGradientDescentCommon):
 
         self._batch_id = 0
         self._i_max_iter = 0
+        self.compute_success = compute_success
 
     def generate(self, x: np.ndarray, y: Optional[np.ndarray] = None, **kwargs) -> np.ndarray:
         """
@@ -234,10 +236,11 @@ class ProjectedGradientDescentPyTorch(ProjectedGradientDescentCommon):
                     )
                     adv_x[batch_index_1:batch_index_2][attack_success] = adversarial_batch[attack_success]
 
-        logger.info(
-            "Success rate of attack: %.2f%%",
-            100 * compute_success(self.estimator, x, targets, adv_x, self.targeted, batch_size=self.batch_size),
-        )
+        if self.compute_success:
+            logger.info(
+                "Success rate of attack: %.2f%%",
+                100 * compute_success(self.estimator, x, targets, adv_x, self.targeted, batch_size=self.batch_size),
+            )
 
         if self.summary_writer is not None:
             self.summary_writer.reset()
