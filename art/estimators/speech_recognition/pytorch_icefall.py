@@ -137,7 +137,9 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
                  is `np.array(['SIXTY ONE', 'HELLO'])`.
         """
         from transducer.beam_search import greedy_search
-        print(x)
+        
+        if not isinstance(x, np.ndarray):
+            x = np.array(x)
 
         assert batch_size == 1
 
