@@ -164,6 +164,7 @@ class PoisoningAttackCleanLabelEstimatorBackdoor(PoisoningAttackBlackBox):
         num_poison = int(self.pp_poison * len(target_indices))
         selected_indices = np.random.choice(target_indices, num_poison)
 
+        print(selected_indices)
         # Run untargeted PGD on selected points, making it hard to classify correctly
         perturbed_inputs = []
         if self.targeted: # targeted attack
@@ -181,6 +182,8 @@ class PoisoningAttackCleanLabelEstimatorBackdoor(PoisoningAttackBlackBox):
                     eps = self.eps(data[selected_index])
                     eps_step = self.eps_step(data[selected_index])
                     self.attack.set_params(eps=eps, eps_step=eps_step)
+                    print(estimated_labels[selected_index])
+                    print(y_adv[selected_index])
                     perturbed_input = self.attack.generate(data[selected_index], y_adv[selected_index])
                     perturbed_inputs.append(perturbed_input)
         else: # untargeted attack
