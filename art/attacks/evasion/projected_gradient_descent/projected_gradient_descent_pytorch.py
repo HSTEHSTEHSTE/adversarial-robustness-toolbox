@@ -99,7 +99,7 @@ class ProjectedGradientDescentPyTorch(ProjectedGradientDescentCommon):
                                ‘runs/exp1’, ‘runs/exp2’, etc. for each new experiment to compare across them.
         :param verbose: Show progress bars.
         """
-        if isinstance(estimator,  PyTorchClassifier) and not estimator.all_framework_preprocessing:
+        if isinstance(estimator,  ClassifierMixin) and not estimator.all_framework_preprocessing:
             raise NotImplementedError(
                 "The framework-specific implementation only supports framework-specific preprocessing."
             )
