@@ -57,11 +57,11 @@ class ProjectedGradientDescentPyTorch(ProjectedGradientDescentCommon):
     | Paper link: https://arxiv.org/abs/1706.06083
     """
 
-    _estimator_requirements = (BaseEstimator, LossGradientsMixin, ClassifierMixin)  # type: ignore
+    _estimator_requirements = (BaseEstimator, LossGradientsMixin)  # type: ignore
 
     def __init__(
         self,
-        estimator: Union["PyTorchClassifier"],
+        estimator: BaseEstimator,
         norm: Union[int, float, str] = np.inf,
         eps: Union[int, float, np.ndarray] = 0.3,
         eps_step: Union[int, float, np.ndarray] = 0.1,
@@ -99,7 +99,7 @@ class ProjectedGradientDescentPyTorch(ProjectedGradientDescentCommon):
                                ‘runs/exp1’, ‘runs/exp2’, etc. for each new experiment to compare across them.
         :param verbose: Show progress bars.
         """
-        if not estimator.all_framework_preprocessing:
+        if isinstance(estimator,  PyTorchClassifier) and not estimator.all_framework_preprocessing:
             raise NotImplementedError(
                 "The framework-specific implementation only supports framework-specific preprocessing."
             )
