@@ -283,6 +283,7 @@ class ProjectedGradientDescentPyTorch(ProjectedGradientDescentCommon):
             adv_x = self._compute_pytorch(
                 adv_x, inputs, targets, mask, eps, eps_step, self.num_random_init > 0 and i_max_iter == 0, momentum
             )
+            self.estimator.loss_gradient(adv_x)
 
         return adv_x.cpu().detach().numpy()
 
