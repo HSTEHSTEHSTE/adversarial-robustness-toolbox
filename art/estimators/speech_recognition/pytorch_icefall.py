@@ -185,6 +185,7 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         # Get results
         results = x.grad
         results = self._apply_preprocessing_gradient(x, results)
+        print(results)
         return results
 
     def fit(self, x: np.ndarray, y: np.ndarray, batch_size: int = 1, nb_epochs: int = 6, **kwargs) -> None:
