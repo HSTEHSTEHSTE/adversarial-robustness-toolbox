@@ -154,6 +154,7 @@ class ProjectedGradientDescentPyTorch(ProjectedGradientDescentCommon):
 
         # Set up targets
         targets = self._set_targets(x, y, isinstance(self.estimator, ClassifierMixin))
+        print(targets)
 
         # Create dataset
         if mask is not None:
