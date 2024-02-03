@@ -179,13 +179,11 @@ class PyTorchIcefall(PytorchSpeechRecognizerMixin, SpeechRecognizerMixin, PyTorc
         x_lens = torch.tensor([features.shape[1]]).to(torch.int32).to(self.device)
         y = k2.RaggedTensor(y)
         loss = self.transducer_model(x=features, x_lens=x_lens, y=y)
-        print(loss)
         loss.backward()
 
         # Get results
         results = x.grad
         results = self._apply_preprocessing_gradient(x, results)
-        print(results)
         return results
 
     def fit(self, x: np.ndarray, y: np.ndarray, batch_size: int = 1, nb_epochs: int = 6, **kwargs) -> None:
